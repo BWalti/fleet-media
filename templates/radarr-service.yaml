@@ -10,3 +10,4 @@ spec:
     targetPort: 7878
   selector:
     workload.user.cattle.io/workloadselector: deployment-media-radarr
+  type: ClusterIP

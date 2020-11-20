@@ -10,3 +10,4 @@ spec:
     targetPort: 8989
   selector:
     workload.user.cattle.io/workloadselector: deployment-media-sonarr
+  type: ClusterIP

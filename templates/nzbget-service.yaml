@@ -10,3 +10,4 @@ spec:
     targetPort: 6789
   selector:
     workload.user.cattle.io/workloadselector: deployment-media-nzbget
+  type: ClusterIP

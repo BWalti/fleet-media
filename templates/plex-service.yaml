@@ -10,3 +10,4 @@ spec:
     targetPort: 32400
   selector:
     workload.user.cattle.io/workloadselector: deployment-media-plex
+  type: ClusterIP
