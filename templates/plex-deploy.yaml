@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    workload.user.cattle.io/workloadselector: deployment-media-plex
+  name: plex
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-media-plex
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-media-plex
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: quicksync
+                operator: In
+                values:
+                - "true"
+      containers:
+      - env:
+        - name: ADVERTISE_IP
+          value: http://192.168.5.5:32400
+        - name: PGID
+          value: "1000"
+        - name: PLEX_CLAIM
+          value: claim-AbmssTKQyuD3DnKFAr6M
+        - name: PUID
+          value: "1000"
+        - name: TZ
+          value: CH
+        - name: VERSION
+          value: latest
+        image: linuxserver/plex:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          exec:
+            command:
+            - ls
+            - /config/lost+found
+        name: plex
+        ports:
+        - containerPort: 32400
+          name: plex
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - ls
+            - /config/lost+found
+        volumeMounts:
+        - mountPath: /media/tank
+          name: tank
+        - mountPath: /config
+          name: plex-config
+        - mountPath: /transcode
+          name: transcode
+        - mountPath: /dev/dri
+          name: dri
+      volumes:
+      - hostPath:
+          path: /media/tank
+          type: ""
+        name: tank
+      - name: plex-config
+        persistentVolumeClaim:
+          claimName: plex-config-claim
+      - name: transcode
+        persistentVolumeClaim:
+          claimName: transcode
+      - hostPath:
+          path: /dev/dri
+          type: ""
+        name: dri

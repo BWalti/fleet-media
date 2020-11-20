@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nzbget
+  ownerReferences:
+  - apiVersion: apps/v1beta2
+    controller: true
+    kind: deployment
+    name: nzbget
+spec:
+  ports:
+  - name: nzbget-nzbget
+    port: 6789
+    protocol: TCP
+    targetPort: 6789
+  selector:
+    workload.user.cattle.io/workloadselector: deployment-media-nzbget

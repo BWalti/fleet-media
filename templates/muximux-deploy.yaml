@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    workload.user.cattle.io/workloadselector: deployment-media-muximux
+  name: muximux
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-media-muximux
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-media-muximux
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: quicksync
+                operator: In
+                values:
+                - "true"
+      containers:
+      - env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: TZ
+          value: CH
+        image: linuxserver/muximux
+        imagePullPolicy: Always
+        livenessProbe:
+          exec:
+            command:
+            - ls
+            - /config/lost+found
+        name: muximux
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - ls
+            - /config/lost+found
+        volumeMounts:
+        - mountPath: /config
+          name: muximux-claim
+        - mountPath: /backup
+          name: backups
+      volumes:
+      - name: muximux-claim
+        persistentVolumeClaim:
+          claimName: muximux-claim
+      - hostPath:
+          path: /media/newssds/backups
+          type: ""
+        name: backups

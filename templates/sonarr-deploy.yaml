@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    workload.user.cattle.io/workloadselector: deployment-media-sonarr
+  name: sonarr
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-media-sonarr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-media-sonarr
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: quicksync
+                operator: In
+                values:
+                - "true"
+      containers:
+      - env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: TZ
+          value: CH
+        image: linuxserver/sonarr:3.0.4.1011-ls2
+        imagePullPolicy: Always
+        livenessProbe:
+          exec:
+            command:
+            - ls
+            - /config/lost+found
+        name: sonarr
+        ports:
+        - containerPort: 8989
+          name: sonarr
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - ls
+            - /config/lost+found
+        volumeMounts:
+        - mountPath: /downloads
+          name: nzbget-downloads
+        - mountPath: /tv
+          name: tank-serien
+        - mountPath: /config
+          name: sonarr-config
+        - mountPath: /backups
+          name: backups
+      volumes:
+      - hostPath:
+          path: /media/nzbget/
+          type: ""
+        name: nzbget-downloads
+      - hostPath:
+          path: /media/tank/Serien
+          type: ""
+        name: tank-serien
+      - name: sonarr-config
+        persistentVolumeClaim:
+          claimName: sonarr-config
+      - hostPath:
+          path: /media/newssds/backups
+          type: ""
+        name: backups

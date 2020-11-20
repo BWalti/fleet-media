@@ -1,0 +1,68 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: muximux-claim
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+    storageClassName: longhorn
+    volumeMode: Filesystem
+    volumeName: muximux-pv
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: plex-config-claim
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 30Gi
+    storageClassName: longhorn-static
+    volumeMode: Filesystem
+    volumeName: plex-pv
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: radarr-config
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 5Gi
+    storageClassName: longhorn-static
+    volumeMode: Filesystem
+    volumeName: radarr-pv
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: sonarr-config
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+    storageClassName: longhorn-static
+    volumeMode: Filesystem
+    volumeName: sonarr-pv
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: transcode
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+    storageClassName: longhorn
+    volumeMode: Filesystem
+    volumeName: transcode-pv
+kind: List

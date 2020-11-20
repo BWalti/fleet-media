@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    workload.user.cattle.io/workloadselector: deployment-media-radarr
+  name: radarr
+  namespace: media
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-media-radarr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-media-radarr
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: quicksync
+                operator: In
+                values:
+                - "true"
+      containers:
+      - env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: TZ
+          value: CH
+        image: linuxserver/radarr:3.0.0.4107-ls1
+        imagePullPolicy: Always
+        livenessProbe:
+          exec:
+            command:
+            - ls
+            - /config/lost+found
+        name: radarr
+        ports:
+        - containerPort: 7878
+          name: radarr
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - ls
+            - /config/lost+found
+        volumeMounts:
+        - mountPath: /downloads
+          name: nzbget-downloads
+        - mountPath: /movies
+          name: tank-filme
+          subPath: Movies
+        - mountPath: /popular-movies
+          name: tank-filme
+          subPath: PopularMovies
+        - mountPath: /family-movies
+          name: tank-filme
+          subPath: FamilyMovies
+        - mountPath: /backups
+          name: backups
+        - mountPath: /config
+          name: radarr-config
+      volumes:
+      - hostPath:
+          path: /media/nzbget/
+          type: ""
+        name: nzbget-downloads
+      - hostPath:
+          path: /media/tank/
+          type: ""
+        name: tank-filme
+      - hostPath:
+          path: /media/newssds/backups
+          type: ""
+        name: backups
+      - name: radarr-config
+        persistentVolumeClaim:
+          claimName: radarr-config
