@@ -61,7 +61,7 @@ spec:
       volumes:
       - name: muximux-claim
         persistentVolumeClaim:
-          claimName: muximux-claim
+          claimName: muximux-pvc
       - hostPath:
           path: /media/newssds/backups
           type: ""

@@ -4,7 +4,6 @@ metadata:
   labels:
     workload.user.cattle.io/workloadselector: deployment-media-radarr
   name: radarr
-  namespace: media
 spec:
   replicas: {{ .Values.replicas }}
   selector:
@@ -85,4 +84,4 @@ spec:
         name: backups
       - name: radarr-config
         persistentVolumeClaim:
-          claimName: radarr-config
+          claimName: radarr-config-pvc

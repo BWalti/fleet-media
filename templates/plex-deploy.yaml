@@ -75,10 +75,10 @@ spec:
         name: tank
       - name: plex-config
         persistentVolumeClaim:
-          claimName: plex-config-claim
+          claimName: plex-config-pvc
       - name: transcode
         persistentVolumeClaim:
-          claimName: transcode
+          claimName: transcode-pvc
       - hostPath:
           path: /dev/dri
           type: ""

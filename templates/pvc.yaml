@@ -3,7 +3,9 @@ items:
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
-    name: muximux-claim
+    annotations:
+      volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    name: muximux-pvc
   spec:
     accessModes:
     - ReadWriteOnce
@@ -12,50 +14,54 @@ items:
         storage: 1Gi
     storageClassName: longhorn
     volumeMode: Filesystem
-    volumeName: muximux-pv
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
-    name: plex-config-claim
+    annotations:
+      volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    name: plex-config-pvc
   spec:
     accessModes:
     - ReadWriteOnce
     resources:
       requests:
         storage: 30Gi
-    storageClassName: longhorn-static
+    storageClassName: longhorn
     volumeMode: Filesystem
-    volumeName: plex-pv
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
-    name: radarr-config
+    annotations:
+      volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    name: radarr-config-pvc
   spec:
     accessModes:
     - ReadWriteOnce
     resources:
       requests:
         storage: 5Gi
-    storageClassName: longhorn-static
+    storageClassName: longhorn
     volumeMode: Filesystem
-    volumeName: radarr-pv
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
-    name: sonarr-config
+    annotations:
+      volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    name: sonarr-config-pvc
   spec:
     accessModes:
     - ReadWriteOnce
     resources:
       requests:
         storage: 1Gi
-    storageClassName: longhorn-static
+    storageClassName: longhorn
     volumeMode: Filesystem
-    volumeName: sonarr-pv
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
-    name: transcode
+    annotations:
+      volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    name: transcode-pvc
   spec:
     accessModes:
     - ReadWriteOnce
@@ -64,5 +70,4 @@ items:
         storage: 10Gi
     storageClassName: longhorn
     volumeMode: Filesystem
-    volumeName: transcode-pv
 kind: List

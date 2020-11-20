@@ -73,7 +73,7 @@ spec:
         name: tank-serien
       - name: sonarr-config
         persistentVolumeClaim:
-          claimName: sonarr-config
+          claimName: sonarr-config-pvc
       - hostPath:
           path: /media/newssds/backups
           type: ""
